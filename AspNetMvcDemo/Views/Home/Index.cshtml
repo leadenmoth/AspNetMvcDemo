@@ -1,0 +1,81 @@
+﻿@model List<AspNetMvcDemo.Models.Product>
+@{
+    ViewBag.Title = "Product List";
+}
+<h2>@ViewBag.Title</h2>
+
+<form>
+    <p>
+        <label for="name">Name: </label>
+        <input type="text" name="name" id="name"><br />
+        
+        <label for="vegetable">Vegetable</label>
+        <input type="radio" name="category" id="vegetable" value="vegetable">
+        <label for="fruit">Fruit</label>
+        <input type="radio" name="category" id="fruit" value="fruit"><br />
+        <label for="instock">In stock?</label>
+        <input type="checkbox" name="instock" id="instock" value="true"><br />
+
+        <select name="store">
+            <option value="1">Store 1</option>
+            <option value="2">Store 2</option>
+            <option value="3">Store 3</option>
+            <option value="4">Store 4</option>
+        </select><br />
+
+        <input type="submit" value="Submit"/>
+    </p>
+</form>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model[0].ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Modified)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Price)
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ID</td>
+                <td>@item.Category</td>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.Modified</td>
+                <td>@item.Price</td>
+            </tr>
+        }
+    </tbody>
+
+    <tfoot>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Total:</th>
+            <th>@Model.Sum(item => item.Price)</th>
+        </tr>
+    </tfoot>
+</table>
+
+
