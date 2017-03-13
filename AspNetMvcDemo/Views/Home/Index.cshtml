@@ -42,7 +42,31 @@
     </div>
 
     <div class="small-12 medium-8 columns">
-        <table class="hover stack">
+        <div class="input-group">
+            <label for="filter" class="input-group-label">Filter:</label>
+            <input type="text" name="filter" id="inputfilter" class="input-group-field">
+            <div class="input-group-button">
+                <input type="button" name="toggle" id="changetable" value="Change table"/>
+            </div>
+            
+        </div>
+        <table class="hover stack" id="resttable">
+            <caption>ToDo List</caption>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>ID</th>
+                    <th>Task</th>
+                    <th>Completed?</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            </tbody>
+
+        </table>
+
+        <table class="hover stack" id="modeltable">
             <thead>
                 <tr>
                     <th>
@@ -93,5 +117,55 @@
         </table>
     </div>
 </div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "http://jsonplaceholder.typicode.com/todos",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (index, results) {
+                        $("#resttable tbody").append(
+                            "<tr>"
+                            + "<td>" + results.userId + "</td>"
+                            + "<td>" + results.id + "</td>"
+                            + "<td>" + results.title + "</td>"
+                            + '<td class="completed">' + results.completed + "</td>"
+                            + "</tr>")
+                    })
+                }
+
+            });
+
+            $("#inputfilter").keyup(function () {
+                filter = new RegExp($(this).val(), 'i');
+                $("table tbody tr").filter(function () {
+                    $(this).each(function () {
+                        found = false;
+                        $(this).children().each(function () {
+                            content = $(this).html();
+                            if (content.match(filter)) {
+                                found = true
+                            }
+                        });
+                        if (!found) {
+                            $(this).hide();
+                        }
+                        else {
+                            $(this).show();
+                        }
+                    });
+                });
+            });
+            $('#modeltable').hide();
+            $('#changetable').click(function () {
+                $('table').toggle();
+            });
+        });
+    </script>
+}
 
 
