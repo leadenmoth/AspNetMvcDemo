@@ -1,0 +1,40 @@
+﻿@model AspNetMvcDemo.Models.Product
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    @Html.ValidationSummary(true, "", new { @class = "error" })
+    @Html.HiddenFor(model => model.ID)
+
+    <div class="input-group">
+        @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "input-group-label" })
+        @Html.EditorFor(model => model.Category, new { htmlAttributes = new { @class = "input-group-field" } })
+        @Html.ValidationMessageFor(model => model.Category, "", new { @class = "error" })
+    </div>
+
+    <div class="input-group">
+        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "input-group-label" })
+        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "input-group-field" } })
+        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "error" })
+    </div>
+
+    <div class="input-group">
+        @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "input-group-label" })
+        @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "input-group-field" } })
+        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "error" })
+    </div>
+
+    <div class="input-group">
+        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "input-group-label" })
+        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "input-group-field" } })
+        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "error" })
+    </div>
+
+    <div class="input-group">
+        @Html.LabelFor(model => model.Modified, htmlAttributes: new { @class = "input-group-label" })
+        @Html.EditorFor(model => model.Modified, new { htmlAttributes = new { @class = "input-group-field" } })
+        @Html.ValidationMessageFor(model => model.Modified, "", new { @class = "error" })
+    </div>
+    <input type="submit" value="Save" class="success button" id="save" />
+}

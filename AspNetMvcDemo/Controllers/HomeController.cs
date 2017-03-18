@@ -1,87 +1,124 @@
-﻿using AspNetMvcDemo.Models;
-using System;
-using System.Collections.Generic;
+﻿using AspNetMvcDemo.Extensions;
+using AspNetMvcDemo.Models;
+using System.Data.Entity;
 using System.Linq;
-using System.Web;
+using System.Net;
 using System.Web.Mvc;
 
 namespace AspNetMvcDemo.Controllers
 {
     public class HomeController : Controller
     {
+        private ProductDbContext db = new ProductDbContext();
+
+        // GET: Home
         public ActionResult Index()
         {
-            ///Hardcoding some demo values for now
-            List<Product> products = new List<Product>
-            {
-                new Product()
-                {
-                    ID = 1,
-                    Category = "Vegetables",
-                    Name = "Potatoes",
-                    Price = 1.99M,
-                    Description = "Price per kg",
-                    Modified = DateTime.Now
-                },
-                new Product()
-                {
-                    ID = 2,
-                    Category = "Vegetables",
-                    Name = "Cucumbers",
-                    Price = 2.99M,
-                    Description = "Price per kg",
-                    Modified = DateTime.Now
-                },
-                new Product()
-                {
-                    ID = 3,
-                    Category = "Vegetables",
-                    Name = "Carrots",
-                    Price = 1.99M,
-                    Description = "Price per kg",
-                    Modified = DateTime.Now
-                },
-                new Product()
-                {
-                    ID = 4,
-                    Category = "Fruit",
-                    Name = "Apples",
-                    Price = 2.50M,
-                    Description = "Price per kg",
-                    Modified = DateTime.Now
-                },
-                new Product()
-                {
-                    ID = 5,
-                    Category = "Fruit",
-                    Name = "Bananas",
-                    Price = 1.99M,
-                    Description = "Price per kg",
-                    Modified = DateTime.Now
-                }
-            };
-            return View(products);
+            return View(db.Products.ToList());
         }
 
-        ///POST action on Index takes form data, parses it to string and
-        ///stores it in TempData collection and calls GET version of Index.
-        ///Redirect is to avoid duplicating table population code;
-        ///all these crazy workarounds are just to keep withing Task 1 parameters
-        [HttpPost]
-        public ActionResult Index(FormCollection input)
+        // GET: Home/Create
+        public ActionResult Create()
         {
-            string output = "";
-            foreach (var key in input.AllKeys)
+            return PartialView();
+        }
+
+        // POST: Home/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "ID,Category,Name,Price,Description,Modified")] Product product)
+        {
+            string url = null;
+            string partial = null;
+            if (ModelState.IsValid)
             {
-                output += input[key] + " ";
+                db.Products.Add(product);
+                db.SaveChanges();
+                url = Url.Action("Index", "Home");
             }
-            TempData["message"] = output;
+            else
+            {
+                partial = PartialView("Create", product).RenderToString();
+            }
+            return Json(new { partial, url });
+        }
+
+        // GET: Home/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Product product = db.Products.Find(id);
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+            return PartialView(product);
+        }
+
+        // POST: Home/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "ID,Category,Name,Price,Description,Modified")] Product product)
+        {
+            string url = null;
+            string partial = null;
+            if (ModelState.IsValid)
+            {
+                db.Entry(product).State = EntityState.Modified;
+                db.SaveChanges();
+                url = Url.Action("Index", "Home");
+            } else
+            {
+                partial = PartialView("Edit", product).RenderToString();
+            }
+            return Json(new { partial, url});
+        }
+
+        // GET: Home/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Product product = db.Products.Find(id);
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+            return View(product);
+        }
+
+        // POST: Home/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Product product = db.Products.Find(id);
+            db.Products.Remove(product);
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        public ActionResult About()
+        protected override void Dispose(bool disposing)
         {
-            ViewBag.Message = "Placeholder 'About' page";
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        public ActionResult Json()
+        {
+            ViewBag.Message = "Json external API demo from Front End tasks.";
 
             return View();
         }

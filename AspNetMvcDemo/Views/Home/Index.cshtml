@@ -1,148 +1,85 @@
-﻿@model List<AspNetMvcDemo.Models.Product>
+﻿@model IEnumerable<AspNetMvcDemo.Models.Product>
+
 @{
-    ViewBag.Title = "Product List";
+    ViewBag.Title = "Index";
 }
 <h2>@ViewBag.Title</h2>
 
 <div class="row">
-    <div class="small-12 medium-4 columns">
-        @using (Html.BeginForm())
-        {
-            <div class="input-group">
-                <label for="name" class="input-group-label">Name:</label>
-                <input type="text" name="name" id="name" class="input-group-field">
-            </div>
-            <fieldset class="fieldset">
-                <legend>Category</legend>
-                <input type="radio" name="category" id="vegetable" value="(vegetable)"><label for="vegetable">Vegetable</label>
-                <input type="radio" name="category" id="fruit" value="(fruit)"><label for="fruit">Fruit</label>
-            </fieldset>
-
-
-
-            <div class="row">
-                <div class="large-4 column">
-                    <label for="instock">
-                        In stock?
-                        <input type="checkbox" name="instock" id="instock" value="in stock">
-                    </label>
-                </div>
-                <div class="large-8 column">
-                    <select name="store">
-                        <option value="at store 1">Store 1</option>
-                        <option value="at store 2">Store 2</option>
-                        <option value="at store 3">Store 3</option>
-                        <option value="at store 4">Store 4</option>
-                    </select>
-                    <input type="submit" value="Submit" class="success button"/>
-
-                </div>
-
-            </div>
-        }
-        <p>@TempData["message"]</p>
+    <div class="small-12 medium-4 columns" id="editor">
+        <div class="callout primary">
+            <h5>Product Database</h5>
+            <p>Press <kbd>Create New</kbd> to enter a new product, or click existing product's number to edit.</p>
+        </div>
     </div>
-
     <div class="small-12 medium-8 columns">
         <div class="input-group">
+            <div class="input-group-button">
+                <input type="button" value="Create New" id="createnew" />
+            </div>
             <label for="filter" class="input-group-label">Filter:</label>
             <input type="text" name="filter" id="inputfilter" class="input-group-field">
-            <div class="input-group-button">
-                <input type="button" name="toggle" id="changetable" value="Change table"/>
-            </div>
-            
         </div>
         <table class="hover stack" id="modeltable">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model[0].ID)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model[0].Category)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model[0].Name)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model[0].Description)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model[0].Modified)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model[0].Price)
-                    </th>
-                </tr>
-            </thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Modified)
+                </th>
+                <th></th>
+            </tr>
 
-            <tbody>
-                @foreach (var item in Model)
+            @foreach (var item in Model)
             {
-                    <tr>
-                        <td>@item.ID</td>
-                        <td>@item.Category</td>
-                        <td>@item.Name</td>
-                        <td>@item.Description</td>
-                        <td>@item.Modified</td>
-                        <td>@item.Price</td>
-                    </tr>
-                }
-            </tbody>
-
-            <tfoot>
                 <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>Total:</th>
-                    <th>@Model.Sum(item => item.Price)</th>
+                    <td>
+                        <a href="#" class="edit">@Html.DisplayFor(modelItem => item.ID)</a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Modified)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                    </td>
                 </tr>
-            </tfoot>
-        </table>
-
-        <table class="hover stack" id="resttable">
-            <caption>ToDo List</caption>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>ID</th>
-                    <th>Task</th>
-                    <th>Completed?</th>
-                </tr>
-            </thead>
-
-            <tbody>
-            </tbody>
+            }
 
         </table>
-
     </div>
 </div>
-
 @section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
     <script>
         $(document).ready(function () {
-
-            $.ajax({
-                type: "GET",
-                url: "http://jsonplaceholder.typicode.com/todos",
-                dataType: "json",
-                success: function (data) {
-                    $.each(data, function (index, results) {
-                        $("#resttable tbody").append(
-                            "<tr>"
-                            + "<td>" + results.userId + "</td>"
-                            + "<td>" + results.id + "</td>"
-                            + "<td>" + results.title + "</td>"
-                            + '<td class="completed">' + results.completed + "</td>"
-                            + "</tr>")
-                    })
-                }
-
-            });
-
+            //Filter table
             $("#inputfilter").keyup(function () {
                 filter = new RegExp($(this).val(), 'i');
                 $("table tbody tr").filter(function () {
@@ -163,12 +100,33 @@
                     });
                 });
             });
-            $('#resttable').hide();
-            $('#changetable').click(function () {
-                $('table').toggle();
+            //Load Create form
+            $("#createnew").click(function () {
+                $('#editor').load('/Home/Create');
             });
+            //Load edit form
+            $(".edit").click(function (event) {
+                event.preventDefault();
+                $('#editor').load('/Home/Edit/' + $(this).text());
+            });
+            //Post form and handle server-side validation results
+            $(document).on('submit', 'form', function () {
+                $.ajax({
+                    type: "POST",
+                    url: $(this).attr('action'),
+                    data: $('form').serialize(),
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result.url != null) {
+                            window.location = result.url;
+                        } else {
+                            $("#editor").html(result.partial);
+                        }
+                    }
+                });
+                return false;
+            });
+
         });
     </script>
 }
-
-
