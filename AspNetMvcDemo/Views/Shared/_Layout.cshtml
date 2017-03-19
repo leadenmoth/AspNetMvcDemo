@@ -14,22 +14,22 @@
                 <li class="menu-text">
                     @Html.ActionLink("ASP.NET Tasks", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
                 </li>
-                <li>@Html.ActionLink("Home", "Index", "Home")
+                <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)
                     <ul class="menu">
-                        <li>@Html.ActionLink("Home", "Index", "Home")
+                        <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)
                             <ul class="menu">
-                                <li>@Html.ActionLink("JSON Demo", "Json", "Home")</li>
-                                <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                                <li>@Html.ActionLink("JSON Demo", "Json", "Home", new { area = "" }, null)</li>
+                                <li>@Html.ActionLink("API Help", "Index", "Help", new { area = "" }, null)</li>
                             </ul>
 
                         </li>
-                        <li>@Html.ActionLink("JSON Demo", "Json", "Home")</li>
-                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                        <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, null)</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, null)</li>
                     </ul>
 
                 </li>
-                <li>@Html.ActionLink("JSON Demo", "Json", "Home")</li>
-                <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                <li>@Html.ActionLink("JSON Demo", "Json", "Home", new { area = "" }, null)</li>
+                <li>@Html.ActionLink("API Help", "Index", "Help", new { area = "" }, null)</li>
             </ul>
         </div>
     </div>

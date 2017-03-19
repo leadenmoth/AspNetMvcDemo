@@ -123,6 +123,13 @@ namespace AspNetMvcDemo.Controllers
             return View();
         }
 
+        public ActionResult About()
+        {
+            ViewBag.Message = "Placeholder 'About' page";
+
+            return View();
+        }
+
         public ActionResult Contact()
         {
             ViewBag.Message = "Placeholder 'Contact' page";
